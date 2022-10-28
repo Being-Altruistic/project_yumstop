@@ -1,0 +1,212 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+        <h2>
+            {{ user.username }}
+            </h2>
+        <h2> Email : {{ user.email }}
+            </h2>
+<br><br><br><br>
+<header><h4>Appointments Status</h4></header>
+<br>
+    {% for requests in app_list %}
+        {% if requests.patient_id == user.id %}
+                {% if requests.status == 'OPEN' %}
+                    {% if requests.request_date.day < full_time.date.day %}
+                        <article class="media content-section" style="margin-right: -15em;">
+                          <div class="media-body">
+                            <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                              <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                              <p class="article-content"><h5> Closes : {{ requests.CLOSING }}</h5></p>
+                              <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                              <label style="    display: inline-block;
+                                background-color: darkgray;
+                                width: 9em;
+                                height: 3em;
+                                border-radius: 1em;
+                                margin-left: 7em;"><b style="font-weight: bold;
+                                margin-left: 8px;
+                                font-size: 2em;"> CLOSED </b></label>
+                          </div>
+                        </article>
+                    {% else %}
+                        {% if hour >= requests.CLOSING.hour %}
+                            {% if min >= requests.CLOSING.minute %}
+                                <article class="media content-section" style="margin-right: -15em;">
+                                  <div class="media-body">
+                                    <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                      <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                      <p class="article-content"><h5> Closed : {{ requests.CLOSING }}</h5></p>
+                                      <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                      <label style="    display: inline-block;
+                                        background-color: darkgray;
+                                        width: 9em;
+                                        height: 3em;
+                                        border-radius: 1em;
+                                        margin-left: 7em;"><b style="font-weight: bold;
+                                        margin-left: 8px;
+                                        font-size: 2em;"> CLOSED </b></label>
+                                  </div>
+                                </article>
+                            {% else %}
+                                <article class="media content-section" style="margin-right: -15em;">
+                                  <div class="media-body">
+                                    <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                      <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                      <p class="article-content"><h5> Closes : {{ requests.CLOSING }}</h5></p>
+                                      <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                      <label style="    display: inline-block;
+                        background-color: lawngreen;
+                        width: 9em;
+                        height: 3em;
+                        border-radius: 1em;
+                        margin-left: 7em;"><b style="font-weight: bold;
+                                    margin-left: 8px;
+                                    font-size: 2em;"> {{ requests.status }} </b></label>
+                                  </div>
+
+                                    <form method="post" action="{% url 'url_user_actions' requests.id %}">
+                                        {% csrf_token %}
+                                        <select name="user_action" style="margin-left: 10em; width:9em;
+                                        height: 3em;
+                                        margin-top: 0em;    border-color: red;
+                                         border-width: 4px;">
+                                             <option value= "Joining">Joining</option>
+                                            <option value= "fulfilled">Already Fulfilled</option>
+                                            <option value= "late">Will be late</option>
+                                        </select>
+                                    <div class="form-group" style="    margin-left: -138px;    height: 0em;">
+                                            <button class="btn btn-outline-info" type="submit"  style="      margin-top: 1em;
+                                        width: 140px;
+                                        margin-left: 19em;">Action</button>
+                                    </div>
+                                    </form>
+
+                                </article>
+                            {% endif %}
+                        {% else %}
+                            <article class="media content-section" style="margin-right: -15em;">
+                              <div class="media-body">
+                                <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                  <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                  <p class="article-content"><h5> Closes : {{ requests.CLOSING }}</h5></p>
+                                  <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                  <label style="    display: inline-block;
+                    background-color: lawngreen;
+                    width: 9em;
+                    height: 3em;
+                    border-radius: 1em;
+                    margin-left: 7em;"><b style="font-weight: bold;
+                    margin-left: 8px;
+                    font-size: 2em;"><a href="#"> {{ requests.status }} </a></b></label>
+                              </div>
+
+                                    <form method="post" action="{% url 'url_user_actions' requests.id %}">
+                                        {% csrf_token %}
+                                        <select name="user_action" style="margin-left: 10em; width:9em;
+                                        height: 3em;
+                                        margin-top: 0em;    border-color: red;
+                                            border-width: 4px;">
+                                             <option value= "Joining">Joining</option>
+                                            <option value= "fulfilled">Already Fulfilled</option>
+                                            <option value= "late">Will be late</option>
+                                        </select>
+                                    <div class="form-group" style="    margin-left: -138px;    height: 0em;">
+                                            <button class="btn btn-outline-info" type="submit"  style="         margin-top: 1em;
+                                    width: 140px;
+                                    margin-left: 19em;">Action</button>
+                                    </div>
+                                    </form>
+
+                            </article>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if requests.status == 'CLOSED' %}
+                    {% if requests.patient_response == "Patient is JOINING | Please JOIN" %}
+                        {% if requests.treatment == "Null" %}
+                            <article class="media content-section" style="margin-right: -15em;">
+                                              <div class="media-body">
+                                                <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                                  <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                                  <p class="article-content"><h5> Closed : {{ requests.CLOSING }}</h5></p>
+                                                  <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                                  <p class="article-content"><h5>Certificate : WILL POST SOON </h5></p>
+                                                  <label style="    display: inline-block;
+                                                    background-color: darkgray;
+                                                    width: 9em;
+                                                    height: 3em;
+                                                    border-radius: 1em;
+                                                    margin-left: 7em;"><b style="font-weight: bold;
+                                                    margin-left: 8px;
+                                                    font-size: 2em;"> CLOSED </b></label>
+                                              </div>
+                            </article>
+                        {% else %}
+                            <article class="media content-section" style="margin-right: -15em;">
+                                              <div class="media-body">
+                                                <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                                  <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                                  <p class="article-content"><h5> Closed : {{ requests.CLOSING }}</h5></p>
+                                                  <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                                  <p class="article-content"><h5>Certificate : <a href="{% url 'certificate' requests.id %}"> Certificate</a></h5></p>
+                                                  <label style="    display: inline-block;
+                                                    background-color: darkgray;
+                                                    width: 9em;
+                                                    height: 3em;
+                                                    border-radius: 1em;
+                                                    margin-left: 7em;"><b style="font-weight: bold;
+                                                    margin-left: 8px;
+                                                    font-size: 2em;"> CLOSED </b></label>
+                                              </div>
+                            </article>
+                        {% endif %}
+                    {% else %}
+                        <article class="media content-section" style="margin-right: -15em;">
+                                              <div class="media-body">
+                                                <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                                                  <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                                                  <p class="article-content"><h5> Closed : {{ requests.CLOSING }}</h5></p>
+                                                  <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                                                  <label style="    display: inline-block;
+                                                    background-color: darkgray;
+                                                    width: 9em;
+                                                    height: 3em;
+                                                    border-radius: 1em;
+                                                    margin-left: 7em;"><b style="font-weight: bold;
+                                                    margin-left: 8px;
+                                                    font-size: 2em;"> CLOSED </b></label>
+                                              </div>
+                            </article>
+                    {% endif %}
+                {% endif %}
+                {% if requests.status == 'WAIT' %}
+                    <article class="media content-section" style="margin-right: -15em;">
+                      <div class="media-body">
+                        <h2><a class="article-title">{{ requests.consulter }}</a></h2>
+                          <p class="article-content"><h5> Raised : {{ requests.request_date }}</h5></p>
+                          <p class="article-content"><h5> Closes : [> NOT OPENED YET <] Please wait to OPEN </h5></p>
+                          <p class="article-content"><h5>To Ask : {{ requests.desc }}</h5></p>
+                          <label style="    display: inline-block;
+            background-color: red;
+            width: 7em;
+            height: 3em;
+            border-radius: 1em;
+            margin-left: 7em;"><b style="font-weight: bold;
+            margin-left: 8px;
+            font-size: 2em;"><font color="white">{{ requests.status }}</font> </b></label>
+                          <form method="POST" action="{% url 'app-cancel' %}">
+                          {% csrf_token %}
+                         <button class="btn btn-outline-info" name="cancelapp" value="{{ requests.id }}" type="submit" style="    margin-left: 17em;
+                            margin-top: -89px;
+                            background-color: red;
+                            color: white;
+                            width: 7em;
+                            height: 3em;"><b>CANCEL</b></button>
+                         </form>
+                      </div>
+                    </article>
+                {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,126 @@
+{% load static %}   <!-- To load CSS static files -->
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Giving the absolute URL for using the static CSS files-->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+            <!--
+            When you depend on href='' parameters of absolute paths,
+            you need to change it every time.
+            So better a unique identifier path that will remain the same for-ever.
+            You can do it for all.
+            -->
+          <a class="navbar-brand mr-4" href="{% url 'start' %}">YumStop! | Your Ultimate Meal Stop!</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <!--<a class="nav-item nav-link" href="/">Home</a>-->
+              {% if user.is_authenticated %}
+              <a class="nav-item nav-link" href="{% url 'blog' %}">Blog</a>
+              <a class="nav-item nav-link" href="{% url 'connect' %}">Connect</a>
+              <a class="nav-item nav-link" href="{% url 'bookmk' %}">Bookmarks</a>
+              {% endif %}
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+                <!-- checking the current authentication -->
+                {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                  <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                  <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main" class="container">
+        <div class="col-md-8">
+            <!-- Displaying Flash/Alert Messages-->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <b>{{ message }}</b>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+          <div class="content-section" style="
+        margin-left: -11em;
+    margin-right: 55em;
+    margin-top: 4em;
+    border-block-end-width: 1em;
+    border-bottom-color: black;
+    border-bottom-right-radius: 6em;
+    border-bottom-left-radius: 2em;">
+    <form method="POST" action="{% url 'start' %}">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4"> BMI Calculator </legend>
+        <div id="div_id_title" class="form-group"> <label for="height" class=" requiredField">
+                        Height ( Meters )<span class="asteriskField">*</span> </label>
+        <div class=""> <input type="height" name="height"   maxlength="200" class="numberinput numberInput form-control" required id="height">
+        </div>
+        </div>
+        <div id="div_id_content" class="form-group"> <label for="weight" class=" requiredField">
+         Weight ( Kg )<span class="asteriskField">*</span> </label>
+        <div class=""> <input type="weight" name="weight"  maxlength="200" class="textinput textInput form-control" required id="weight">
+        </div>
+        </div>
+        </div>
+
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit" style="margin-left: -3em;">Calculate</button>
+        </div>
+    </form>
+</div>
+          <div class="col-md-4" style="height: 0em;">
+      <div class="content-section" style="    margin-left: 26em;
+    margin-right: -26em;
+    margin-top: -21em;
+    border-block-end-width: 1em;
+    border-bottom-color: black;
+    border-bottom-right-radius: 6em;
+    border-bottom-left-radius: 2em;
+    height: 14em;">
+        <h3>Blogs are a great way to share your ideas</h3>
+        <p class='text-muted'> Create it right away!
+          <ul class="list-group">
+          <form action="{% url 'post-create' %}">
+              {% csrf_token %}
+             <div class="form-group">
+            <button class="btn btn-outline-info" type="submit" style="margin-top: 8em;
+    margin-left: 6em;">Create</button>
+        </div>
+        </form>
+          </ul>
+        </p>
+      </div>
+    </div>
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
+

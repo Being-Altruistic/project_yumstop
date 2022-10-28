@@ -1,0 +1,48 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <article class="media content-section" style="margin-right: -14em;">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="#">{{ object.author }}</a>
+          <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+            <form style="margin-left: 8em; margin-top: -1em;" method="post" action="{% url 'blog' %}">
+                {% csrf_token %}
+                <button style="
+                        color: red;
+                        border-radius: 2em;
+                        background: white;
+                        margin-left: 27em;
+
+                " type="submit" name="getbookmark" value="{{ post.id }}">Bookmark</button>
+            </form>
+
+        </div>
+        <h2 class="article-title">{{ object.title }}</h2>
+        <p class="article-content">{{ object.content }}</p>
+          {% if request.user == object.author %}
+          <div class="form-group">
+              <form action="{% url 'post-edit' object.id %}">
+                  {% csrf_token %}
+              <button class="btn btn-outline-info" type="submit" style="margin-left: 29em;width: 5em;color: black;background-color: white;"> Edit </button>
+              </form>
+
+              {% if message_trigger == 1 %}
+                  <form method="POST" action="{% url 'post-delete' object.id %}">
+                      {% csrf_token %}
+                  <button class="btn btn-outline-info" name="confirmed" value="confirmed" type="submit" style="margin-left: 35em;margin-top: -4em;background-color: red;color: white;">Confirm Delete</button>
+                  </form>
+              {% else %}
+                <form method="POST" action="{% url 'post-delete' object.id %}">
+                  {% csrf_token %}
+                 <button class="btn btn-outline-info" name="askconfirmation" value="askconfirmation" type="submit" style="    margin-left: 35em;margin-top: -4em;background-color: red;color: white;">Delete</button>
+                 </form>
+              {% endif %}
+        </div>
+          {% endif %}
+      </div>
+    </article>
+{% else %}
+<h2> Please <a href="{% url 'login' %}">Login </a>| <a href="{% url 'register' %}">Register</a> to Continue</h2>
+{% endif %}
+{% endblock %}

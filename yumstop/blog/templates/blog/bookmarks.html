@@ -1,0 +1,67 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<title> Bookmarks | Read it to full </title>
+<header>
+    <h2>Blogs</h2>
+</header>
+{% for post in post_list %}
+    {% if post.bookmark == 'MARK' %}
+        <article class="media content-section" style="margin-right: -15em;">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.author }}</a>
+              <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+
+                <form style="margin-left: 8em; margin-top: -1em;" method="post" action="{% url 'bookmk' %}">
+                    {% csrf_token %}
+                    <button style="
+                            color: red;
+                            border-radius: 2em;
+                            background: white;
+                            margin-left: 27em;
+                            width: 2em;
+                             font-size: larger;
+                    " type="submit" name="deletebookmark" value="{{ post.id }}">X</button>
+                </form>
+
+            </div>
+            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+          </div>
+        </article>
+    {% endif %}
+{% endfor %}
+<header>
+    <h2>Connects</h2>
+</header>
+{% for dietician in diet_list %}
+    {% if dietician.bookmark == 'MARK' %}
+        <article class="media content-section" style="margin-right: -15em;">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">#RANK {{ dietician.rank }}</a>
+              <a class="mr-2" href="#">#SCORE {{ dietician.tot_rank_score }}</a>
+              <a class="mr-2" href="#">#Avg Rating {{ dietician.ratings }}</a>
+                <form style="margin-left: 8em; margin-top: -1em;" method="post" action="{% url 'bookmk' %}">
+                    {% csrf_token %}
+                    <button style="
+                            color: red;
+                            border-radius: 2em;
+                            background: white;
+                            margin-left: 27em;
+                            width: 2em;
+                             font-size: larger;
+                    " type="submit" name="deletecbookmark" value="{{ dietician.id }}">X</button>
+                </form>
+
+            </div>
+            <h2><a class="article-title" href="{% url 'top_profile' dietician.id %}">{{ dietician.name }}</a></h2>
+            <p class="article-content">{{ dietician.qualifications }}</p>
+          </div>
+        </article>
+    {% endif %}
+{% endfor %}
+{% else %}
+<h2> Please <a href="{% url 'login' %}">Login </a>| <a href="{% url 'register' %}">Register</a> to Continue</h2>
+{% endif %}
+{% endblock %}

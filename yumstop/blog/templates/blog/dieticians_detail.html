@@ -1,0 +1,44 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<p></p>
+<header>
+    <h2 style="width: 20em;">{{ object.name }}'s Public Profile </h2>
+</header>
+<p></p><br>
+    <article class="media content-section" style="margin-right: -14em;">
+      <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2"><h2><i>Name:  {{ object.name }}</i></h2></a><br><br>
+            <form style="margin-left: 8em; margin-top: -1em;" method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                {% if desc_flag == 1 %}
+                <div id="div_id_desc" class="form-group"> <label for="id_desc" class=" requiredField" style=" margin-left: -8em;">
+                        <h4>Description</h4></label>
+                <div class=""> <textarea name="desc_box" style=" margin-left: -8em;" cols="40" rows="3" class="textarea form-control" required id="id_desc"></textarea>
+                </div>
+                </div>
+                {% endif %}
+                <button style="
+                        color: red;
+                        border-radius: 2em;
+                        background: white;
+                        margin-left: -8em;
+                        width: 10em;
+                        height: 3em;
+                " type="submit" name="getappointment" class="btn btn-outline-info" value="{{ object.id }}"><b>Get Appointment?</b></button>
+
+
+            </form>
+        </div>
+        <h2 class="article-title"><h2>Qualifications: </h2> {{ object.qualifications }}</h2><p>
+        <h2 class="article-title">Rank: <h2> <i>{{ object.rank }}</i></h2><p>
+          <h2 class="article-title">Score: <h2><i> {{ object.tot_rank_score }}</i></h2><p>
+          <h2 class="article-title">Avg Rating: <h2><i> {{ object.ratings }}</i></h2></h2></h2>
+      </div>
+
+    </article>
+{% else %}
+<h2> Please <a href="{% url 'login' %}">Login </a>| <a href="{% url 'register' %}">Register</a> to Continue</h2>
+{% endif %}
+{% endblock %}
